@@ -1,0 +1,30 @@
+name: kotlin-shell
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Kotlin code
+        shell: kotlin
+        run: |
+          #!/usr/bin/env kotlin
+          
+          import java.time.LocalDate
+          import java.time.ZoneId
+          import java.time.temporal.WeekFields
+          import java.util.Locale
+
+          val weekNumber: Int =
+              LocalDate.now(ZoneId.of("Europe/Madrid"))
+                  .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
+
+          println(weekNumber)

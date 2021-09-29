@@ -2,6 +2,11 @@ name: kotlin-shell
 
 on:
   workflow_dispatch:
+    inputs:
+      args:
+        description: 'Arguments, sample `"hi"` or `"arg1" "arg2"`'
+        default: ''
+        required: false
 
 jobs:
   build:
@@ -14,17 +19,4 @@ jobs:
           fetch-depth: 0
 
       - name: Kotlin code
-        shell: kotlin
-        run: |
-          #!/usr/bin/env kotlin
-          
-          import java.time.LocalDate
-          import java.time.ZoneId
-          import java.time.temporal.WeekFields
-          import java.util.Locale
-
-          val weekNumber: Int =
-              LocalDate.now(ZoneId.of("Europe/Madrid"))
-                  .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
-
-          println(weekNumber)
+        run: kotlin .github/workflows/kotlin-shell.main.kts ${{ github.event.inputs.args }}

@@ -1,0 +1,33 @@
+name: kotlin-shell-inline
+
+on:
+  workflow_dispatch:
+    inputs:
+      machines:
+        description: 'GitHub virtual environments (`ubuntu-latest`, `windows-latest`, ...)'
+        default: 'ubuntu-latest, windows-latest, macos-latest'
+        required: false
+
+jobs:
+  setup-matrix:
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.setup-matrix.outputs.matrix }}
+
+    steps:
+      - name: Setup matrix
+        id: setup-matrix
+        shell: kotlin -howtorun .main.kts {0}
+        run: | 
+          val machines = "${{ github.event.inputs.machines }}".filterNot(Char::isWhitespace).split(',').joinToString(",") { """"$it"""" }
+          println("""::set-output name=matrix::{"os": [$machines]}""")
+
+  matrix-consumer:
+    runs-on: ubuntu-latest
+
+    needs: setup-matrix
+
+    steps:
+      - shell: kotlin -howtorun .main.kts {0}
+        run: println("""${{needs.setup-matrix.outputs.matrix}}""")

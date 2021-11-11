@@ -1,0 +1,20 @@
+name: bash-env-var
+
+on:
+  workflow_dispatch:
+    inputs:
+      machines:
+        description: 'GitHub virtual environments (`ubuntu-latest`, `windows-latest`, ...)'
+        default: 'ubuntu-latest, windows-latest, macos-latest'
+        required: false
+
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set env
+        run: echo "bash_env=${{ github.event.inputs.machines }}" >> $GITHUB_ENV
+
+      - name: get-env
+        run: echo "${{ env.bash_env }}"

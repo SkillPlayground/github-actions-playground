@@ -1,0 +1,22 @@
+name: kotlin-env-var
+
+on:
+  workflow_dispatch:
+    inputs:
+      machines:
+        description: 'GitHub virtual environments (`ubuntu-latest`, `windows-latest`, ...)'
+        default: 'ubuntu-latest, windows-latest, macos-latest'
+        required: false
+
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set env
+        shell: kotlin -howtorun .main.kts {0}
+        run: println("""bash_env=${{ github.event.inputs.machines }} >> ${'$'}GITHUB_ENV""")
+
+      - name: get-env
+        shell: kotlin -howtorun .main.kts {0}
+        run: println("""${{ env.bash_env }}""")

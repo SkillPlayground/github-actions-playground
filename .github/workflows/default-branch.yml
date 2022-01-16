@@ -1,0 +1,18 @@
+name: default-branch
+
+on:
+  push:
+    branches:
+      - testing
+
+env:
+  default-branch: $default-branch
+
+jobs:
+  branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Branch
+        run: |
+          echo "${{ env.default-branch }}"

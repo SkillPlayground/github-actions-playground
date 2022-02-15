@@ -1,0 +1,15 @@
+name: kotlin-shell-inline-on-pr-labels
+
+on:
+  pull_request:
+
+jobs:
+  print-pr-labels:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print labels
+        shell: kotlin -howtorun .main.kts {0}
+        run: |
+          val labelNames: List<String> = "${{ join(github.event.pull_request.labels.*.name) }}".split(",")
+          println(labelNames)

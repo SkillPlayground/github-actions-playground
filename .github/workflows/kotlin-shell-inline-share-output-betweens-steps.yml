@@ -1,0 +1,27 @@
+name: kotlin-shell-inline-share-output-betweens-steps
+
+on:
+  workflow_dispatch:
+    inputs:
+      property-value:
+        description: 'Property to be saved'
+        default: 'some-value'
+        required: false
+
+jobs:
+  share-property-between-steps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set property
+        id: set-property
+        shell: kotlin -howtorun .main.kts {0}
+        run: |
+          val value = "${{ github.event.inputs.property-value }}"
+          println("::set-output name=some-key::$value")
+
+      - name: Get property
+        shell: kotlin -howtorun .main.kts {0}
+        run: |
+          val value = "${{ steps.set-property.outputs.some-key }}"
+          println(value)

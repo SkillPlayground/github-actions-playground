@@ -1,0 +1,21 @@
+name: kotlin-shell-inline-on-pr-playground
+
+on:
+  pull_request:
+    types:
+      - closed
+    paths:
+      - useless-file.txt
+
+jobs:
+  print-pr-context-values:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print GitHub pull request context values
+        shell: kotlin -howtorun .main.kts {0}
+        run: |
+          println("${{ join(github.event.pull_request.labels.*.name) }}".split(","))
+          println("head_ref: ${{ github.head_ref }}")
+          println("ref: ${{ github.ref }}")
+          println("isMerged: ${{ github.event.pull_request.merged }}")

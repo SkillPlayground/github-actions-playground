@@ -1,0 +1,16 @@
+name: print-step-id
+
+on:
+  workflow_dispatch:
+
+jobs:
+  print-step-id:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print Steps ID
+        id: first-step-id
+        run: |
+          echo "${{ toJson(github.job) }}"
+          echo "${{ toJson(jobs.*.steps) }}"
+          echo "${{ toJson(steps.id) }}"

@@ -1,0 +1,22 @@
+name: kotlin-github-environment-files
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Kotlin code
+        id: KOTLIN
+        run: kotlin .github/workflows/kotlin-github-environment-files.kts
+
+      - name: Print Variables
+        run: |
+          echo "${{ env.HELLO-ENV }}"
+          echo "${{ steps.KOTLIN.outputs.HELLO-OUTPUT }}"

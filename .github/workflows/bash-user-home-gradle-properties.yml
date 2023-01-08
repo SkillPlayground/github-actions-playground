@@ -1,0 +1,31 @@
+name: bash-user-home-gradle-properties
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-gradle-properties:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Java
+        id: setup-java
+        uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'zulu'
+          java-version: 11
+
+      - name: Create Gradle files
+        run: |
+          cd ~
+          mkdir -p .gradle/ && touch .gradle/gradle.properties
+
+      - name: Setup Gradle Java installations paths
+        run: |
+          cd ~/.gradle
+          echo "org.gradle.java.installations.paths=${{ steps.setup-java.outputs.path }}" >> gradle.properties
+
+      - name: Echo gradle.properties content
+        run: |
+          cd ~/.gradle
+          cat "gradle.properties"

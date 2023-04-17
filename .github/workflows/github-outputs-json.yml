@@ -1,0 +1,31 @@
+name: github-outputs-json
+
+on:
+  workflow_dispatch:
+    inputs:
+      field:
+        description: 'field'
+        required: true
+        default: 'field_one'
+        type: choice
+        options:
+          - 'field_one'
+          - 'field_two'
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set output
+        id: step
+        run: |
+          echo "field_one=value 1" >> "$GITHUB_OUTPUT"
+          echo "field_two=value 2" >> "$GITHUB_OUTPUT"
+
+      - name: Echo output
+        shell: kotlin -howtorun .main.kts {0}
+        run: |
+          val outputs = """${{ toJSON(steps.step.outputs) }}"""
+          val value = outputs.lines().first { it.contains("${{ github.event.inputs.field }}") }.substringBeforeLast('"').substringAfterLast('"')
+          println(value)

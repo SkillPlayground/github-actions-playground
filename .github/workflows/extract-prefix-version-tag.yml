@@ -1,0 +1,46 @@
+name: extract-prefix-version-tag
+
+on:
+  push:
+    tags:
+      - '**'
+
+jobs:
+  calculate:
+    runs-on: ubuntu-latest
+
+    outputs:
+      tag-prefix: ${{ steps.tag-prefix.outputs.tag-prefix }}
+
+    steps:
+      - name: Calculate tag prefix output
+        id: tag-prefix
+        run: |
+          echo "The github.ref_name is ${{ github.ref_name }}"
+          version="${{ github.ref_name }}"
+          if [[ $version =~ ^([a-zA-Z]*)[0-9]?.* ]]; then
+            prefix="${BASH_REMATCH[1]}"
+            echo "tag-prefix=$prefix" >> "$GITHUB_OUTPUT"
+          else
+            echo "Invalid version format"
+            exit 1
+          fi
+          echo "$prefix"
+
+  step1:
+    runs-on: ubuntu-latest
+
+    needs: [ calculate ]
+
+    steps:
+      - name: Echo step1
+        run: echo "${{ needs.calculate.outputs.tag-prefix }}"
+
+  step2:
+    runs-on: ubuntu-latest
+
+    needs: [ calculate, step1 ]
+
+    steps:
+      - name: Echo step2
+        run: echo "${{ needs.calculate.outputs.tag-prefix }}"

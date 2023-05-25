@@ -1,0 +1,20 @@
+name: github-machines-push
+
+on:
+  push:
+
+env:
+  MACHINES: "[ 'macos-latest', 'ubuntu-latest', 'windows-latest' ]"
+
+jobs:
+  machine-os:
+
+    strategy:
+      matrix:
+        os: ${{ fromJson(env.MACHINES) }}
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Machine OS
+        run: echo '${{ matrix.os }}'

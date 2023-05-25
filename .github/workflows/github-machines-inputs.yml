@@ -1,0 +1,22 @@
+name: github-machines-inputs
+
+on:
+  workflow_dispatch:
+    inputs:
+      machines:
+        default: "[ 'macos-latest', 'ubuntu-latest', 'windows-latest' ]"
+        description: 'Virtual machine operative systems to run the job'
+        required: false
+
+jobs:
+  machine-os:
+
+    strategy:
+      matrix:
+        os: ${{ fromJson(github.event.inputs.machines) }}
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Machine OS
+        run: echo '${{ matrix.os }}'

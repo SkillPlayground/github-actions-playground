@@ -1,0 +1,75 @@
+name: github-variables
+
+on:
+  workflow_dispatch:
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set output and environment variable
+        id: step-output
+        run: |
+          echo "key_one=value one" >> "$GITHUB_OUTPUT"
+          echo "key_one=value one" >> "$GITHUB_ENV"
+
+      - name: Set multiline output
+        id: step-multiline-output
+        run: |
+          echo "key_two<<EOF" >> "$GITHUB_OUTPUT"
+          echo "value" >> "$GITHUB_OUTPUT"
+          echo "two" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Set multiline environment variable
+        run: |
+          echo "key_two<<EOF" >> "$GITHUB_ENV"
+          echo "value" >> "$GITHUB_ENV"
+          echo "two" >> "$GITHUB_ENV"
+          echo "EOF" >> "$GITHUB_ENV"
+
+      - name: Echo variables via echo
+        run: |
+          echo "------------"
+          echo "GitHub environment variables:"
+          echo "${{ env.key_one }}"
+          echo "---"
+          echo "${{ env.key_two }}"
+          echo "------------"
+          echo "GitHub outputs:"
+          echo "${{ steps.step-output.outputs.key_one }}"
+          echo "---"
+          echo "${{ steps.step-multiline-output.outputs.key_two }}"
+
+      - name: Echo variables via Kotlin
+        shell: kotlin -howtorun .main.kts {0}
+        run: |
+          println("""------------""")
+          println("""GitHub environment variables:""")
+          println("""${{ env.key_one }}""")
+          println("""---""")
+          println("""${{ env.key_two }}""")
+          println("""------------""")
+          println("""GitHub outputs:""")
+          println("""${{ steps.step-output.outputs.key_one }}""")
+          println("""---""")
+          println("""${{ steps.step-multiline-output.outputs.key_two }}""")
+
+      - name: Echo variables via Kotlin files
+        shell: kotlin -howtorun .main.kts {0}
+        run: |
+          import java.io.File
+          
+          println("------------")
+          val githubEnvFilePath = System.getenv("GITHUB_ENV")
+          println("GitHub environment variables file: $githubEnvFilePath")
+          println("GitHub environment variables:")
+          println("---")
+          println(File(githubEnvFilePath).readText())
+          println("------------")
+          val githubOutputFilePath = System.getenv("GITHUB_OUTPUT")
+          println("GitHub output variables file: $githubOutputFilePath")
+          println("---")
+          println("GitHub outputs variables:")
+          println(File(githubOutputFilePath).readText())

@@ -1,0 +1,30 @@
+name: kotlin-echo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  job1:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Set env via Kotlin Windows
+        if: matrix.os == 'windows-latest'
+        shell: kotlin -howtorun .main.kts {0}
+        run: |
+          java.io.File(System.getenv("GITHUB_ENV")).appendText("\nSELECTED_COLOR=green\n")
+          java.io.File(System.getenv("GITHUB_ENV")).appendText("\nSELECTED_COLOR=red\n")
+
+      - name: Set env via Kotlin macOS and Linux
+        if: matrix.os != 'windows-latest'
+        shell: kotlin -howtorun .main.kts {0}
+        run: |
+          java.io.File(System.getenv("GITHUB_ENV")).appendText("\nSELECTED_COLOR=green\n")
+          java.io.File(System.getenv("GITHUB_ENV")).appendText("\nSELECTED_COLOR=red\n")
+
+      - name: Echo SELECTED_COLOR
+        run: echo "${{ env.SELECTED_COLOR }}"

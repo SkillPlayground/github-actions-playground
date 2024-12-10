@@ -1,0 +1,24 @@
+name: github-echo
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  github-echo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: GitHub echo
+        run: echo "${{ github }}"
+
+      - name: GitHub Actor
+        run: echo "${{ github.actor }}"
+
+      - name: GitHub Triggering Actor
+        run: echo "${{ github.triggering_actor }}"
